@@ -29,7 +29,7 @@ html {
   margin: 0;
   padding: 0;
   outline: none;
-  font-family: Nekst;
+  font-family: Verdana, Tahoma, Arial, Nekst;
   color: map.get($colors, dark-grey);
 }
 
