@@ -1,5 +1,5 @@
 export enum ROUTES {
-  HOME = "/",
-  LOGIN = "/login/",
-  NEWS = "/news/",
+  HOME = '/',
+  LOGIN = '/login/',
+  NEWS = '/news/',
 }

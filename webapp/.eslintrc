@@ -29,7 +29,7 @@
         ],
         "quotes": [
             "error",
-            "double"
+            "single"
         ],
         "indent": "off",
         "no-fallthrough": "off", // disallow fallthrough of case statements
