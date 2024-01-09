@@ -1,27 +1,15 @@
-import * as commonStyles from "../../assets/styles/common.module.css";
-import * as styles from "./header.module.css";
-import React from "react";
-import { NavLink } from "react-router-dom";
-import Logo from "../../components/Logo/logo";
-import { ROUTES } from "../../routes/constants";
+import React from 'react'
+
+import * as styles from './header.module.css'
 
 function Header() {
-  return (
-    <header className={styles.header}>
-      <div className={commonStyles.container}>
-        <nav className={styles.content}>
-          <NavLink to={ROUTES.HOME}>
-            <Logo />
-          </NavLink>
-
-          <div className={styles.right}>
-            <NavLink to={ROUTES.LOGIN}>Login</NavLink>
-            <NavLink to={ROUTES.NEWS}>News</NavLink>
-          </div>
-        </nav>
-      </div>
-    </header>
-  );
+    return (
+        <header className={styles.header}>
+            <div className={styles.container}>
+                Wordlium
+            </div>
+        </header>
+    )
 }
 
-export default Header;
+export default Header

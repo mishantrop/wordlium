@@ -33,15 +33,7 @@ html {
   color: map.get($colors, dark-grey);
 }
 
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+.container {
+  max-width: 414px;
+  margin: 0 auto;
 }
-
-.content {
-  flex: 1 0 auto;
-  padding-top: 2vh;
-  padding-bottom: 2vh;
-}
-

@@ -16,6 +16,7 @@ export const WordLine = ({
     const cssRound: React.CSSProperties = {
         display: 'flex',
         gap: '4px',
+        justifyContent: 'center',
     }
 
 

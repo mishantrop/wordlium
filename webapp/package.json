@@ -11,7 +11,7 @@
   "scripts": {
     "webpack-config-dev": "nodemon --watch \"./__webpack__/*\" --exec npm run start-dev",
     "webpack-config-prod": "nodemon --watch \"./__webpack__/*\" --exec npm run start-prod",
-    "start-dev": "cross-env-shell webpack serve ${npm_package_config_dev}",
+    "dev": "cross-env-shell webpack serve ${npm_package_config_dev}",
     "start-prod": "cross-env-shell webpack serve ${npm_package_config_prod}",
     "build-dev": "cross-env-shell webpack ${npm_package_config_dev}",
     "build-prod": "cross-env-shell webpack ${npm_package_config_prod} --stats-children",

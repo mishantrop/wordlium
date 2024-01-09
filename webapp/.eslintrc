@@ -25,11 +25,11 @@
         "@typescript-eslint/no-var-requires": "off", // To avoid of error: "Require statement not part of import statement", if ES modules are used
         "@typescript-eslint/no-unused-vars": ["warn"],
         "semi": [
-            "error",
+            "warn",
             "never"
         ],
         "quotes": [
-            "error",
+            "warn",
             "single"
         ],
         "indent": ["warn", 4],
