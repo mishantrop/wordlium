@@ -1,10 +1,10 @@
 .header {
+  letter-spacing: 8px;
   padding: 24px 0;
   text-align: center;
   text-transform: uppercase;
-}
 
-.container {
-  max-width: 414px;
-  margin: 0 auto;
+  @media (prefers-color-scheme: dark) {
+      color: #ddd;
+  }
 }

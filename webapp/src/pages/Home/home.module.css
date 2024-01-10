@@ -1,6 +1,3 @@
-@use "sass:map";
-@import "../../assets/styles/variables.css";
-
 .image {
     display: flex;
     align-items: center;

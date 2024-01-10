@@ -1,5 +1,3 @@
-@import "./assets/styles/variables.css";
-
 @font-face {
   font-family: "Nekst";
   src: local("Nekst"), local("Nekst-Black"),
@@ -29,11 +27,20 @@ html {
   margin: 0;
   padding: 0;
   outline: none;
-  font-family: Verdana, Tahoma, Arial, Nekst;
-  color: map.get($colors, dark-grey);
+  font-family: Tahoma, Arial, Nekst;
 }
 
 .container {
   max-width: 414px;
   margin: 0 auto;
+}
+
+.words {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hug-16 {
+  height: 16px;
 }

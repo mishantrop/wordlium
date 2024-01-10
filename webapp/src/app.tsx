@@ -6,25 +6,44 @@ import { Layout } from './layout/layout/layout'
 // import { BrowserRouter as Router } from 'react-router-dom'
 
 // import AppRoutes from './routes/routes'
-// import * as commonStyles from './assets/styles/common.module.css'
-import styles from './app.module.css'
+import { words } from './dict/words-ru-5'
+import * as styles from './app.module.css'
+import { rand } from './rand'
+
+enum GameStage {
+    GAME = 'GAME',
+    FINISH = 'FINISH',
+}
 
 export default function App() {
     const game = useRef<Game>(new Game())
     const [shouldUpdate, setShouldUpdate] = useState(Math.random())
+    const [stage, setStage] = useState(GameStage.GAME)
 
     useEffect(() => {
-        game.current.setTargetWord('водка')
+        const randomWord = words[rand(0, words.length - 1)]
+        console.log({ randomWord })
+        game.current.newGame(randomWord)
         game.current.updateListener = () => {
             setShouldUpdate(Math.random())
         }
+        game.current.finishListener = () => {
+            setStage(GameStage.FINISH)
+        }
     }, [])
+
+    const handleClickNewWord = () => {
+        const randomWord = words[rand(0, words.length - 1)]
+        console.log({ randomWord })
+        game.current.newGame(randomWord)
+        setStage(GameStage.GAME)
+    }
 
     return (
         <Layout>
             <div data-crutch={shouldUpdate} />
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <div className={styles.words}>
                 {game.current.rounds.map((round, roundIdx) => {
                     const isCurrentRound = roundIdx === game.current.roundState.currentRoundIdx
                     return (
@@ -38,22 +57,32 @@ export default function App() {
                 })}
             </div>
 
-            <div style={{ height: '16px' }} />
+            <div className={styles.hug16} />
+            <div className={styles.hug16} />
+            <div className={styles.hug16} />
 
-            <Keyboard
-                language="ru"
-                usedKeys={game.current.roundState.usedKeys}
-                okKeys={game.current.roundState.okKeys}
-                onBackspace={() => {
-                    game.current.handleBackspace()
-                }}
-                onEnter={() => {
+            {stage === GameStage.GAME && (
+                <Keyboard
+                    language="ru"
+                    errorKeys={game.current.roundState.usedKeys}
+                    wrongPlaceKeys={game.current.roundState.usedKeys}
+                    okKeys={game.current.roundState.okKeys}
+                    onBackspace={() => {
+                        game.current.handleBackspace()
+                    }}
+                    onEnter={() => {
 
-                }}
-                onLetter={(key: string) => {
-                    game.current.enterKey(key)
-                }}
-            />
+                    }}
+                    onLetter={(key: string) => {
+                        game.current.enterKey(key)
+                    }}
+                />
+            )}
+            {stage === GameStage.FINISH && (
+                <button onClick={handleClickNewWord}>
+                    Ещё слово
+                </button>
+            )}
         </Layout>
     )
 

@@ -1,9 +1,12 @@
 import React from 'react'
 
+import * as styles from './keyboard.module.css'
+
 type Props = {
     language: 'ru' | 'en';
     okKeys: Array<string>;
-    usedKeys: Array<string>;
+    errorKeys: Array<string>;
+    wrongPlaceKeys: Array<string>;
     onLetter: (value: string) => void;
     onBackspace: () => void;
     onEnter: () => void;
@@ -12,7 +15,8 @@ type Props = {
 export const Keyboard = ({
     language,
     okKeys,
-    usedKeys,
+    errorKeys,
+    wrongPlaceKeys,
     onLetter,
     onBackspace,
     onEnter,
@@ -34,32 +38,45 @@ export const Keyboard = ({
 
     const keys = keysByLanguage[language]
 
-    const getKeyStyle = ({ isOk, isUsed }: { isOk: boolean; isUsed: boolean; }): React.CSSProperties => ({
-        ...isOk ? { backgroundColor: '#ddd', color: '#5d2' } : {},
-        ...isUsed ? { backgroundColor: '#ddd', color: '#888' } : {},
-    })
-
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <div className={styles.keyboard}>
             {keys.map((row, idx) => (
-                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', gap: '4px' }}>
+                <div key={idx} className={styles.row}>
                     {row.map((key) => {
                         if (key === KEY_BACKSPACE) {
-                            return (<button key={key} onClick={onBackspace}>&lt; &times;</button>)
+                            return (
+                                <button
+                                    key={key}
+                                    className={[ styles.key ].join(' ')}
+                                    onClick={onBackspace}
+                                >
+                                    &lt; &times;
+                                </button>
+                            )
                         }
 
                         if (key === KEY_ENTER) {
-                            return (<button key={key} onClick={onEnter}>OK</button>)
+                            return (
+                                <button
+                                    key={key}
+                                    className={[ styles.key ].join(' ')}
+                                    onClick={onEnter}
+                                >
+                                    OK
+                                </button>
+                            )
                         }
 
                         return (
                             <button
                                 key={key}
                                 onClick={() => { onLetter(key) }}
-                                style={getKeyStyle({
-                                    isOk: okKeys.includes(key),
-                                    isUsed: usedKeys.includes(key),
-                                })}
+                                className={[
+                                    styles.key,
+                                    okKeys.includes(key) ? styles.keyFullMatch : undefined,
+                                    errorKeys.includes(key) ? styles.keyError : undefined,
+                                    wrongPlaceKeys.includes(key) ? styles.keyWrongPlace : undefined,
+                                ].join(' ')}
                             >
                                 {key}
                             </button>

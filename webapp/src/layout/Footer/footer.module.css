@@ -1,5 +1,5 @@
 .footer {
-  color: map.get($colors, white);
+  color: #666;
   flex: 0 0 auto;
   padding: 24px 0;
 }

@@ -1,0 +1,39 @@
+.keyboard {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+}
+
+.key {
+    border-radius: 4px;
+    padding: 6px;
+    border: 0;
+    font-size: 16px;
+    background: #eee;
+    cursor: pointer;
+
+    &:hover {
+        background: #e0e0e0;
+    }
+}
+
+.key-full-match {
+    background-color: #2fad00;
+    color: #eee;
+}
+
+.key-error {
+    background-color: #ddd;
+    color: #833;
+}
+
+.key-wrong-place {
+    background-color: #ddd;
+    color: #bbb;
+}

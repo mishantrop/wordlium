@@ -2,6 +2,8 @@ import React from 'react'
 
 import { Letter } from '../../types/letter'
 
+import * as styles from './wordline.module.css'
+
 type Props = {
     currentLetterIdx?: number;
     letters: Array<Letter>;
@@ -13,41 +15,16 @@ export const WordLine = ({
     letters,
     targetWord,
 }: Props) => {
-    const cssRound: React.CSSProperties = {
-        display: 'flex',
-        gap: '4px',
-        justifyContent: 'center',
-    }
-
-
-    const getLetterStyles = ({
-        isOkPlace,
-        isCurrent,
-    }: {
-        isOkPlace: boolean;
-        isCurrent: boolean;
-    }): React.CSSProperties => {
-        return {
-            border: '1px solid #666',
-            borderRadius: '4px',
-            height: '32px',
-            width: '32px',
-            padding: '4px',
-
-            ...isOkPlace ? { color: '#2d4' } : {},
-            ...isCurrent ? { border: '1px solid #26d' } : {},
-        }
-    }
-
     return (
-        <div style={cssRound}>
+        <div className={styles.wordline}>
             {letters.map((letter, letterIdx) => {
                 return (
                     <div
-                        style={getLetterStyles({
-                            isOkPlace: targetWord?.[letterIdx] ? letter.key === targetWord[letterIdx].key : false,
-                            isCurrent: letterIdx === currentLetterIdx,
-                        })}
+                        className={[
+                            styles.letter,
+                            targetWord?.[letterIdx] && letter.key === targetWord[letterIdx].key ? styles.ok : undefined,
+                            letterIdx === currentLetterIdx ? styles.current : undefined,
+                        ].join(' ')}
                         key={letterIdx}
                     >
                         {letter.key}

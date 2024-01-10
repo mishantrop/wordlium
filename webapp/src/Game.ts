@@ -27,23 +27,28 @@ export class Game {
         return value.split('').map((char) => ({ key: char }))
     }
 
-    // private letterToString = (letters: Array<Letter>): string => {
-    //     return letters.map((letter) => letter.key).join('')
-    // }
+    private letterToString = (letters: Array<Letter>): string => {
+        return letters.map((letter) => letter.key).join('')
+    }
 
     public getLetter = () => {
         return this.targetWord
     }
 
-    public updateListener = () => {}
+    private getInitialRounds = (): Array<Array<Letter>> => {
+        return [
+            [{ ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }],
+            [{ ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }],
+            [{ ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }],
+            [{ ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }],
+            [{ ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }],
+        ]
+    }
 
-    public rounds: Array<Array<Letter>> = [
-        [{ ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }],
-        [{ ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }],
-        [{ ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }],
-        [{ ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }],
-        [{ ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }],
-    ]
+    public updateListener = () => {}
+    public finishListener = () => {}
+
+    public rounds: Array<Array<Letter>> = this.getInitialRounds()
 
     public enterKey = (key: string) => {
         const lastLetterIdx = this.rounds[0].length - 1
@@ -54,10 +59,15 @@ export class Game {
         wordRaw[this.roundState.currentLetterIdx].key = key
 
         if (this.roundState.currentLetterIdx === lastLetterIdx) {
+            // Ввели слово правильно
+            if (this.letterToString(this.targetWord) === `${wordString}${key}`) { // TODO костыль
+                this.finishListener()
+            }
             // Ввели последнюю букву
-            if (this.roundState.currentRoundIdx === lastLineIdx) {
+            else if (this.roundState.currentRoundIdx === lastLineIdx) {
                 // Ввели последнее слово
                 console.log('GAME OVER')
+                this.finishListener()
             } else {
                 // Взять буквы из только что законченного слова и занести их в массивы (used, okPlace, wrongPlace)
                 wordRaw.forEach((letter, letterIdx) => {
@@ -78,7 +88,6 @@ export class Game {
                 // Переход к следующему слову
                 this.roundState.currentRoundIdx += 1
                 this.roundState.currentLetterIdx = 0
-
             }
         } else {
             // Переход к следующей букве
@@ -95,7 +104,22 @@ export class Game {
         }
     }
 
-    public setTargetWord = (value: string) => {
+    private setTargetWord = (value: string) => {
         this.targetWord = this.stringToLetter(value)
+    }
+
+    public newGame = (value: string) => {
+        this.setTargetWord(value)
+
+        this.rounds = this.getInitialRounds()
+
+        this.roundState = {
+            currentLetterIdx: 0,
+            currentRoundIdx: 0,
+
+            nearKeys: [],
+            okKeys: [],
+            usedKeys: [],
+        }
     }
 }

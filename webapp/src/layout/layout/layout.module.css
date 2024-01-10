@@ -1,4 +1,15 @@
-.container {
-  max-width: 414px;
-  margin: 0 auto;
+.layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    @media (prefers-color-scheme: dark) {
+        background-color: #222;
+    }
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
 }

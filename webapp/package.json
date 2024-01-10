@@ -14,7 +14,7 @@
     "dev": "cross-env-shell webpack serve ${npm_package_config_dev}",
     "start-prod": "cross-env-shell webpack serve ${npm_package_config_prod}",
     "build-dev": "cross-env-shell webpack ${npm_package_config_dev}",
-    "build-prod": "cross-env-shell webpack ${npm_package_config_prod} --stats-children",
+    "build": "cross-env-shell webpack ${npm_package_config_prod} --stats-children",
     "clean": "rd /s /q build",
     "lint": "eslint src --ext .js --ext .ts",
     "lint-fix": "eslint src --ext .js --ext .ts --fix",
