@@ -33,10 +33,7 @@
         "jsx": "react",
         "plugins": [
             {
-                "name": "typescript-plugin-css-modules",
-                "options": {
-                    "customTemplate": "./customTemplate.js"
-                }
+                "name": "typescript-plugin-css-modules"
             }
         ]
     },

@@ -23,7 +23,7 @@
     }
 }
 
-.key-full-match {
+.key-ok {
     background-color: #2fad00;
     color: #eee;
 }
@@ -33,7 +33,7 @@
     color: #833;
 }
 
-.key-wrong-place {
+.key-near {
     background-color: #ddd;
     color: #bbb;
 }

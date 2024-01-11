@@ -1,8 +1,8 @@
 .layout {
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    min-height: 100vh;
 
     @media (prefers-color-scheme: dark) {
         background-color: #222;
@@ -12,4 +12,13 @@
 .main {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    justify-content: space-between;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: space-around;
 }

@@ -1,46 +1,59 @@
-@font-face {
-  font-family: "Nekst";
-  src: local("Nekst"), local("Nekst-Black"),
-    url("./assets/fonts/Nekst-Black.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: "Gilroy";
-  src: local("Gilroy Regular"), local("Gilroy-Regular"),
-    url("./assets/fonts/Gilroy-Regular.woff") format("woff");
-  font-weight: 900;
-  font-style: normal;
-}
-
 html {
-  box-sizing: border-box;
+    box-sizing: border-box;
+    font-size: 16px;
 }
 
 *,
 *:before,
 *:after {
-  box-sizing: inherit;
+    box-sizing: inherit;
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  outline: none;
-  font-family: Tahoma, Arial, Nekst;
+    margin: 0;
+    padding: 0;
+    outline: none;
+    font-family: Tahoma, Arial;
 }
 
 .container {
-  max-width: 414px;
-  margin: 0 auto;
+    max-width: 414px;
+    margin: 0 auto;
 }
 
 .words {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .hug-16 {
-  height: 16px;
+    height: 16px;
+}
+
+.button-primary {
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid #999;
+    cursor: pointer;
+    display: block;
+    font-size: 24px;
+    margin: 0 auto;
+    max-width: 200px;
+    padding: 8px 16px;
+    transition: background-color 0.2s linear;
+
+    @media (prefers-color-scheme: dark) {
+        background-color: #333;
+        border: 1px solid #3f3f3f;
+        color: #999;
+    }
+
+    &:hover {
+        background-color: #eee;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: #444;
+        }
+    }
 }

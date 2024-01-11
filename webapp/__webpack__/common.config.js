@@ -3,7 +3,7 @@ const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 // const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
+// const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const FileManagerPlugin = require('filemanager-webpack-plugin')
 
 const BUILD_DIR = path.resolve(__dirname, '..', 'build')
@@ -59,9 +59,9 @@ const plugins = [
     new webpack.HotModuleReplacementPlugin(), // For page reloading
 ]
 
-if (process.env.SERVE) {
-    plugins.push(new ReactRefreshWebpackPlugin())
-}
+// if (process.env.SERVE) {
+//     plugins.push(new ReactRefreshWebpackPlugin())
+// }
 
 const devServer = {
     historyApiFallback: true, // Apply HTML5 History API if routes are used
@@ -180,14 +180,14 @@ module.exports = {
                 },
             },
             // --- FONTS
-            {
-                test: /\.(woff2?|eot|ttf|otf)$/i,
-                exclude: /node_modules/,
-                type: 'asset/resource',
-                generator: {
-                    filename: 'assets/fonts/[hash][ext]',
-                },
-            },
+            // {
+            //     test: /\.(woff2?|eot|ttf|otf)$/i,
+            //     exclude: /node_modules/,
+            //     type: 'asset/resource',
+            //     generator: {
+            //         filename: 'assets/fonts/[hash][ext]',
+            //     },
+            // },
         ],
     },
 }

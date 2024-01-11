@@ -4,17 +4,11 @@ export class Game {
     public roundState: {
         currentLetterIdx: number;
         currentRoundIdx: number;
-
-        nearKeys: Array<string>;
-        okKeys: Array<string>;
-        usedKeys: Array<string>;
+        letters: Record<string, 'ok' | 'near' | 'error' | undefined>;
     } = {
             currentLetterIdx: 0,
             currentRoundIdx: 0,
-
-            nearKeys: [],
-            okKeys: [],
-            usedKeys: [],
+            letters: {},
         }
 
     private defaultLetter: Letter = {
@@ -22,6 +16,44 @@ export class Game {
         state: undefined,
     }
     private targetWord: Word = []
+
+    public getErrorKeys = (): Array<string> => {
+        const result: Array<string> = []
+
+        Object.keys(this.roundState.letters).forEach((key) => {
+            if (this.roundState.letters[key] === 'error') {
+                result.push(key)
+            }
+        })
+
+        return result
+    }
+
+    public getNearKeys = (): Array<string> => {
+        const result: Array<string> = []
+
+        Object.keys(this.roundState.letters).forEach((key) => {
+            if (this.roundState.letters[key] === 'near') {
+                result.push(key)
+            }
+        })
+
+        return result
+
+    }
+
+    public getOkKeys = (): Array<string> => {
+        const result: Array<string> = []
+
+        Object.keys(this.roundState.letters).forEach((key) => {
+            if (this.roundState.letters[key] === 'ok') {
+                result.push(key)
+            }
+        })
+
+        return result
+
+    }
 
     private stringToLetter = (value: string): Array<Letter> => {
         return value.split('').map((char) => ({ key: char }))
@@ -69,21 +101,19 @@ export class Game {
                 console.log('GAME OVER')
                 this.finishListener()
             } else {
-                // Взять буквы из только что законченного слова и занести их в массивы (used, okPlace, wrongPlace)
-                wordRaw.forEach((letter, letterIdx) => {
-                    const isPlaceOk = this.targetWord[letterIdx].key === letter.key
-                    // TODO const isPlaceWrong =
-                    /**
-                     * абабв -цель
-                     * абааг - ввели
-                     * ok ok ok near used
-                     */
-                    if (isPlaceOk) {
-                        this.roundState.okKeys.push(letter.key)
-                    } else {
-                        this.roundState.usedKeys.push(letter.key)
-                    }
+                Object.keys(this.roundState.letters).forEach((stateLetter) => {
+                    this.roundState.letters[stateLetter] = undefined
                 })
+
+                // Взять буквы из только что законченного слова и занести их в массивы (used, okPlace, wrongPlace)
+                // wordRaw.forEach((letter, letterIdx) => {
+                //     const isPlaceOk = this.targetWord[letterIdx].key === letter.key
+                //     if (isPlaceOk) {
+                //         this.roundState.okKeys.push(letter.key)
+                //     } else {
+                //         this.roundState.usedKeys.push(letter.key)
+                //     }
+                // })
 
                 // Переход к следующему слову
                 this.roundState.currentRoundIdx += 1
@@ -116,10 +146,7 @@ export class Game {
         this.roundState = {
             currentLetterIdx: 0,
             currentRoundIdx: 0,
-
-            nearKeys: [],
-            okKeys: [],
-            usedKeys: [],
+            letters: {},
         }
     }
 }

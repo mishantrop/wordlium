@@ -1,15 +1,27 @@
 .footer {
-  color: #666;
-  flex: 0 0 auto;
-  padding: 24px 0;
+    color: #666;
+    flex: 0 0 auto;
+    padding: 24px 0;
 }
 
 .copyright {
-  color: #888;
-  text-align: center;
+    color: #888;
+    text-align: center;
+
+    a {
+        color: #0070ff;
+
+        &:hover {
+            text-decoration: none;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            color: #4d93ff;
+        }
+    }
 }
 
 .container {
-  max-width: 414px;
-  margin: 0 auto;
+    margin: 0 auto;
+    max-width: 414px;
 }

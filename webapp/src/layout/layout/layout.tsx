@@ -16,11 +16,11 @@ export const Layout = ({
         <div className={styles.layout}>
             <Header />
             <div className={styles.main}>
-                <div className={commonStyles.container}>
+                <div className={[commonStyles.container, styles.mainContent].join(' ')}>
                     {children}
                 </div>
-                <Footer/>
             </div>
+            <Footer/>
         </div>
     )
 }

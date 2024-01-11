@@ -6,7 +6,7 @@ type Props = {
     language: 'ru' | 'en';
     okKeys: Array<string>;
     errorKeys: Array<string>;
-    wrongPlaceKeys: Array<string>;
+    nearKeys: Array<string>;
     onLetter: (value: string) => void;
     onBackspace: () => void;
     onEnter: () => void;
@@ -16,7 +16,7 @@ export const Keyboard = ({
     language,
     okKeys,
     errorKeys,
-    wrongPlaceKeys,
+    nearKeys,
     onLetter,
     onBackspace,
     onEnter,
@@ -30,7 +30,8 @@ export const Keyboard = ({
             ['z', 'x', 'c', 'v', 'b', 'n', 'm', KEY_BACKSPACE, KEY_ENTER],
         ],
         ru: [
-            ['ё', 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ'],
+            ['ё'],
+            ['й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ'],
             ['ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э'],
             ['я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', KEY_BACKSPACE, KEY_ENTER],
         ],
@@ -73,9 +74,9 @@ export const Keyboard = ({
                                 onClick={() => { onLetter(key) }}
                                 className={[
                                     styles.key,
-                                    okKeys.includes(key) ? styles.keyFullMatch : undefined,
+                                    okKeys.includes(key) ? styles.keyOk : undefined,
                                     errorKeys.includes(key) ? styles.keyError : undefined,
-                                    wrongPlaceKeys.includes(key) ? styles.keyWrongPlace : undefined,
+                                    nearKeys.includes(key) ? styles.keyNear : undefined,
                                 ].join(' ')}
                             >
                                 {key}

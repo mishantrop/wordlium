@@ -48,10 +48,17 @@ export default function App() {
                     const isCurrentRound = roundIdx === game.current.roundState.currentRoundIdx
                     return (
                         <WordLine
-                            {...!isCurrentRound ? { targetWord: game.current.getLetter() } : {}}
+                            {...!isCurrentRound
+                                ? { targetWord: game.current.getLetter() }
+                                : {}
+                            }
                             key={roundIdx}
                             letters={round}
-                            currentLetterIdx={isCurrentRound ? game.current.roundState.currentLetterIdx : undefined}
+                            currentLetterIdx={
+                                isCurrentRound && stage === GameStage.GAME
+                                    ? game.current.roundState.currentLetterIdx
+                                    : undefined
+                            }
                         />
                     )
                 })}
@@ -64,9 +71,9 @@ export default function App() {
             {stage === GameStage.GAME && (
                 <Keyboard
                     language="ru"
-                    errorKeys={game.current.roundState.usedKeys}
-                    wrongPlaceKeys={game.current.roundState.usedKeys}
-                    okKeys={game.current.roundState.okKeys}
+                    errorKeys={game.current.getErrorKeys()}
+                    nearKeys={game.current.getNearKeys()}
+                    okKeys={game.current.getOkKeys()}
                     onBackspace={() => {
                         game.current.handleBackspace()
                     }}
@@ -79,8 +86,11 @@ export default function App() {
                 />
             )}
             {stage === GameStage.FINISH && (
-                <button onClick={handleClickNewWord}>
-                    Ещё слово
+                <button
+                    className={styles.buttonPrimary}
+                    onClick={handleClickNewWord}
+                >
+                    ещё слово
                 </button>
             )}
         </Layout>
