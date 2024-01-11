@@ -44,7 +44,7 @@ export class Game {
     }
 
     public stringToLetter = (value: string): Array<Letter> => {
-        return value.split('').map((char) => ({ key: char }))
+        return value.split('').map((char) => ({ key: char, state: undefined }))
     }
 
     public letterToString = (letters: Array<Letter>): string => {
@@ -74,60 +74,76 @@ export class Game {
 
     public attempts: Array<Array<Letter>> = this.getInitialAttempts()
 
-    public enterKey = (enteredKey: string) => {
-        const lastLetterIdx = this.attempts[0].length - 1
-        const lastLineIdx = this.attempts.length - 1
-        const currentAttempt = this.attempts[this.state.currentRoundIdx]
-        currentAttempt[this.state.currentLetterIdx].key = enteredKey
-        const currentAttemptString = currentAttempt.map((letter) => letter.key).join('')
-
-        if (this.state.currentLetterIdx === lastLetterIdx) { // Ввели последнюю букву
-            if (this.letterToString(this.targetWord) === currentAttemptString) { // Ввели слово правильно
-                this.finishListener()
-            } else if (this.state.currentRoundIdx === lastLineIdx) { // Ввели последнюю букву последнего раунда
-                this.finishListener()
-            } else {
-                // Object.keys(this.state.enteredLetters).forEach((stateLetter) => {
-                //     if (this.state.enteredLetters[stateLetter] === 'ok') {
-
-                //     } else if (this.state.enteredLetters[stateLetter] === 'near') {
-
-                //     } else if (this.state.enteredLetters[stateLetter] === 'error') {
-
-                //     } else {
-
-                //     }
-
-                //     // this.state.enteredLetters[stateLetter] = undefined
-                // })
-
-                // Взять буквы из только что законченного слова и занести их в массивы (used, okPlace, wrongPlace)
-                currentAttempt.forEach((letter, letterIdx) => {
-                    const isPlaceOk = this.targetWord[letterIdx].key === letter.key
-                    if (isPlaceOk) {
-                        this.state.enteredLetters[letter.key] = 'ok'
-                    } else if (currentAttemptString.includes(letter.key)) {
-                        this.state.enteredLetters[letter.key] = 'near'
-                    }
-                })
-
-                // Переход к следующему слову
-                this.state.currentRoundIdx += 1
-                this.state.currentLetterIdx = 0
+    private updateLettersState = (currentAttempt: Letter[]) => {
+        const currentAttemptString = this.letterToString(currentAttempt)
+        // Взять буквы из только что законченного слова и занести их в массивы (used, okPlace, wrongPlace)
+        currentAttempt.forEach((letter, letterIdx) => {
+            if (this.targetWord[letterIdx].key === letter.key) {
+                this.state.enteredLetters[letter.key] = 'ok'
+                currentAttempt[letterIdx].state = 'ok'
+            } else if (currentAttemptString.includes(letter.key)) {
+                this.state.enteredLetters[letter.key] = 'near'
+                currentAttempt[letterIdx].state = 'near'
             }
-        } else {
-            // Переход к следующей букве
-            this.state.currentLetterIdx = currentAttemptString.length + 1
+        })
+    }
+
+    public handleKeydown = (enteredKey: string) => {
+        const currentLetter = this.attempts[this.state.currentRoundIdx][this.state.currentLetterIdx]
+
+        if (!currentLetter) {
+            return
+        }
+
+        currentLetter.key = enteredKey
+
+        if (this.state.currentLetterIdx < this.targetWord.length) {
+            this.state.currentLetterIdx = this.state.currentLetterIdx + 1
         }
 
         this.updateListener()
     }
 
     public handleBackspace = () => {
-        this.attempts[this.state.currentRoundIdx][this.state.currentLetterIdx].key = ''
-        if (this.state.currentLetterIdx > 0) {
+        const lastLetterIdx = this.targetWord.length - 1
+        const currentLetter = this.attempts[this.state.currentRoundIdx][this.state.currentLetterIdx]
+        const prevLetter = this.attempts[this.state.currentRoundIdx][this.state.currentLetterIdx - 1]
+
+        if (!currentLetter && this.state.currentLetterIdx > lastLetterIdx) {
+            // Слово введено полностью
+            prevLetter.key = ''
+            this.state.currentLetterIdx -= 1
+        } else if (currentLetter && !currentLetter.key && this.state.currentLetterIdx === lastLetterIdx) {
+            this.state.currentLetterIdx -= 1
+            prevLetter.key = ''
+        } else if (currentLetter && this.state.currentLetterIdx > 0) {
+            prevLetter.key = ''
             this.state.currentLetterIdx -= 1
         }
+        this.updateListener()
+    }
+
+    public handleEnter = () => {
+        const lastLetterIdx = this.targetWord.length - 1
+        const lastLineIdx = this.attempts.length - 1
+        const currentAttempt = this.attempts[this.state.currentRoundIdx]
+        const currentAttemptString = this.letterToString(currentAttempt)
+
+        if (this.state.currentLetterIdx === lastLetterIdx + 1) {
+            if (this.letterToString(this.targetWord) === currentAttemptString) { // Ввели слово правильно
+                this.updateLettersState(currentAttempt)
+                this.finishListener()
+            } else if (this.state.currentRoundIdx === lastLineIdx) { // Ввели последнюю букву последнего раунда
+                this.finishListener()
+            } else {
+                this.updateLettersState(currentAttempt)
+
+                // Переход к следующему слову
+                this.state.currentRoundIdx += 1
+                this.state.currentLetterIdx = 0
+            }
+        }
+
         this.updateListener()
     }
 
@@ -138,8 +154,9 @@ export class Game {
     public newGame = (value: string) => {
         this.setTargetWord(value)
 
-        this.attempts = this.getInitialAttempts()
+        console.log(`target: ${value}`)
 
+        this.attempts = this.getInitialAttempts()
         this.state = {
             currentLetterIdx: 0,
             currentRoundIdx: 0,

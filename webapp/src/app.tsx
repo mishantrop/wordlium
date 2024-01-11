@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useEffect, useRef, useState } from 'react'
 import { Keyboard } from './components/keyboard/keyboard'
 import { WordLine } from './components/wordline/wordline'
@@ -20,29 +21,85 @@ export default function App() {
     const [shouldUpdate, setShouldUpdate] = useState(Math.random())
     const [stage, setStage] = useState(GameStage.GAME)
 
+    const showConfetti = () => {
+        const confettiElement = document.querySelector<HTMLCanvasElement>('#confetti-canvas')
+        if (confettiElement) {
+            confettiElement.style.display = 'block'
+        }
+    }
+
+    const hideConfetti = () => {
+        const confettiElement = document.querySelector<HTMLCanvasElement>('#confetti-canvas')
+        if (confettiElement) {
+            confettiElement.style.display = 'none'
+        }
+    }
+
     useEffect(() => {
         const randomWord = words[rand(0, words.length - 1)]
-        console.log({ randomWord })
         game.current.newGame(randomWord)
         game.current.updateListener = () => {
             setShouldUpdate(Math.random())
         }
         game.current.finishListener = () => {
             setStage(GameStage.FINISH)
+
+            // @ts-ignore
+            if (typeof window.startConfetti === 'function') {
+                showConfetti()
+                // @ts-ignore
+                window.startConfetti()
+                setTimeout(() => {
+                    // @ts-ignore
+                    window.stopConfetti()
+                    setTimeout(() => {
+                        hideConfetti()
+                    }, 3_000)
+                }, 3_000)
+            }
         }
     }, [])
 
     const handleClickNewWord = () => {
         const randomWord = words[rand(0, words.length - 1)]
-        console.log({ randomWord })
         game.current.newGame(randomWord)
         setStage(GameStage.GAME)
     }
 
-    console.log(game.current.state.enteredLetters)
-
     return (
-        <Layout>
+        <Layout
+            keyboard={(
+                <>
+                    <div className={styles.hug16} />
+
+                    {stage === GameStage.GAME && (
+                        <Keyboard
+                            language="ru"
+                            errorKeys={game.current.getErrorKeys()}
+                            nearKeys={game.current.getNearKeys()}
+                            okKeys={game.current.getOkKeys()}
+                            onBackspace={() => {
+                                game.current.handleBackspace()
+                            }}
+                            onEnter={() => {
+                                game.current.handleEnter()
+                            }}
+                            onLetter={(key: string) => {
+                                game.current.handleKeydown(key)
+                            }}
+                        />
+                    )}
+                    {stage === GameStage.FINISH && (
+                        <button
+                            className={styles.buttonPrimary}
+                            onClick={handleClickNewWord}
+                        >
+                            ещё слово
+                        </button>
+                    )}
+                </>
+            )}
+        >
             <div data-crutch={shouldUpdate} />
 
             <div className={styles.words}>
@@ -50,7 +107,7 @@ export default function App() {
                     const isCurrentAttempt = attemptIdx === game.current.state.currentRoundIdx
                     return (
                         <WordLine
-                            {...!isCurrentAttempt
+                            {...!isCurrentAttempt || stage === GameStage.FINISH
                                 ? {
                                     targetWord: game.current.getWordLetter(),
                                     targetWordString: game.current.getWordString(),
@@ -68,36 +125,6 @@ export default function App() {
                     )
                 })}
             </div>
-
-            <div className={styles.hug16} />
-            <div className={styles.hug16} />
-            <div className={styles.hug16} />
-
-            {stage === GameStage.GAME && (
-                <Keyboard
-                    language="ru"
-                    errorKeys={game.current.getErrorKeys()}
-                    nearKeys={game.current.getNearKeys()}
-                    okKeys={game.current.getOkKeys()}
-                    onBackspace={() => {
-                        game.current.handleBackspace()
-                    }}
-                    onEnter={() => {
-
-                    }}
-                    onLetter={(key: string) => {
-                        game.current.enterKey(key)
-                    }}
-                />
-            )}
-            {stage === GameStage.FINISH && (
-                <button
-                    className={styles.buttonPrimary}
-                    onClick={handleClickNewWord}
-                >
-                    ещё слово
-                </button>
-            )}
         </Layout>
     )
 

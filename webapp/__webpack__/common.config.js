@@ -65,7 +65,7 @@ const plugins = [
 
 const devServer = {
     historyApiFallback: true, // Apply HTML5 History API if routes are used
-    open: true,
+    open: false,
     compress: true,
     allowedHosts: 'all',
     hot: true, // Reload the page after changes saved (HotModuleReplacementPlugin)
@@ -106,7 +106,7 @@ module.exports = {
      * Helps to avoid of MIME type ('text/html') is not a supported stylesheet
      * And sets address in html imports
      */
-        publicPath: '/',
+        publicPath: 'auto',
     },
     // Checking the maximum weight of the bundle is disabled
     performance: {

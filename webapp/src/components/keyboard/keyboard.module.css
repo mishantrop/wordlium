@@ -11,12 +11,14 @@
 }
 
 .key {
-    border-radius: 4px;
-    padding: 6px;
-    border: 0;
-    font-size: 16px;
+    align-items: center;
     background: #eee;
+    border-radius: 4px;
+    border: 0;
     cursor: pointer;
+    display: flex;
+    font-size: 16px;
+    padding: 6px;
 
     &:hover {
         background: #e0e0e0;
@@ -34,6 +36,6 @@
 }
 
 .key-near {
-    background-color: #ddd;
-    color: #bbb;
+    background-color: #ffb100;
+    color: #fff;
 }

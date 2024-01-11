@@ -1,6 +1,6 @@
 import React from 'react'
 
-import * as commonStyles from '../../assets/styles/common.module.css'
+import * as commonStyles from '../layout/layout.module.css'
 
 import * as styles from './header.module.css'
 

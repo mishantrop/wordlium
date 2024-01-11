@@ -9,6 +9,13 @@
     }
 }
 
+.container {
+    max-width: 414px;
+    margin: 0 auto;
+    padding: 0 15px;
+    width: 100%;
+}
+
 .main {
     display: flex;
     flex-direction: column;

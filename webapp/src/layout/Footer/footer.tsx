@@ -1,11 +1,13 @@
 import React from 'react'
 
+import * as commonStyles from '../layout/layout.module.css'
+
 import * as styles from './footer.module.css'
 
 export const Footer = () => {
     return (
         <footer className={styles.footer}>
-            <div className={styles.container}>
+            <div className={commonStyles.container}>
                 <div className={styles.copyright}>
                     <a
                         href="https://quasi-art.ru"
