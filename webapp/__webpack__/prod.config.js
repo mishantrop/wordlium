@@ -60,7 +60,7 @@ module.exports = merge(common, {
                     mangle: false,
                     compress: true,
                     output: {
-                        beautify: true,
+                        beautify: false,
                         comments: false,
                     },
                 },
