@@ -17,6 +17,7 @@ enum GameStage {
 }
 
 export default function App() {
+    const [cheatX, setCheatX] = useState(0)
     const game = useRef<Game>(new Game())
     const [shouldUpdate, setShouldUpdate] = useState(Math.random())
     const [stage, setStage] = useState(GameStage.GAME)
@@ -82,12 +83,15 @@ export default function App() {
                             nearKeys={game.current.getNearKeys()}
                             okKeys={game.current.getOkKeys()}
                             onBackspace={() => {
+                                setCheatX((x) => x + 1)
                                 game.current.handleBackspace()
                             }}
                             onEnter={() => {
                                 game.current.handleEnter()
+                                setCheatX(0)
                             }}
                             onLetter={(key: string) => {
+                                setCheatX(0)
                                 game.current.handleKeydown(key)
                             }}
                         />
@@ -128,6 +132,8 @@ export default function App() {
                     )
                 })}
             </div>
+
+            {cheatX > 20 && game.current.letterToString(game.current.targetWord)}
         </Layout>
     )
 

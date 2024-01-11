@@ -17,7 +17,7 @@ export class Game {
         key: '',
         state: undefined,
     }
-    private targetWord: Word = []
+    public targetWord: Word = []
 
     public getErrorKeys = (): Array<string> => {
         return this.getSomeKeys('error')
