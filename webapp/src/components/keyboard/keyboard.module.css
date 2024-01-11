@@ -15,10 +15,11 @@
     background: #eee;
     border-radius: 4px;
     border: 0;
+    color: #222;
     cursor: pointer;
     display: flex;
     font-size: 16px;
-    padding: 6px;
+    padding: 7px;
 
     &:hover {
         background: #e0e0e0;
@@ -31,8 +32,7 @@
 }
 
 .key-error {
-    background: #eee;
-    color: #bbb;
+    opacity: 0.3;
 }
 
 .key-near {
