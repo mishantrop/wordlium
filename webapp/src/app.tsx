@@ -39,24 +39,29 @@ export default function App() {
         setStage(GameStage.GAME)
     }
 
+    console.log(game.current.state.enteredLetters)
+
     return (
         <Layout>
             <div data-crutch={shouldUpdate} />
 
             <div className={styles.words}>
-                {game.current.rounds.map((round, roundIdx) => {
-                    const isCurrentRound = roundIdx === game.current.roundState.currentRoundIdx
+                {game.current.attempts.map((attempt, attemptIdx) => {
+                    const isCurrentAttempt = attemptIdx === game.current.state.currentRoundIdx
                     return (
                         <WordLine
-                            {...!isCurrentRound
-                                ? { targetWord: game.current.getLetter() }
+                            {...!isCurrentAttempt
+                                ? {
+                                    targetWord: game.current.getWordLetter(),
+                                    targetWordString: game.current.getWordString(),
+                                }
                                 : {}
                             }
-                            key={roundIdx}
-                            letters={round}
+                            key={attemptIdx}
+                            attempt={attempt}
                             currentLetterIdx={
-                                isCurrentRound && stage === GameStage.GAME
-                                    ? game.current.roundState.currentLetterIdx
+                                isCurrentAttempt && stage === GameStage.GAME
+                                    ? game.current.state.currentLetterIdx
                                     : undefined
                             }
                         />

@@ -1,14 +1,16 @@
 import type { Letter, Word } from './types/letter'
 
+type StateLetterStatus = 'ok' | 'near' | 'error'
+
 export class Game {
-    public roundState: {
+    public state: {
         currentLetterIdx: number;
         currentRoundIdx: number;
-        letters: Record<string, 'ok' | 'near' | 'error' | undefined>;
+        enteredLetters: Record<string, StateLetterStatus | undefined>;
     } = {
             currentLetterIdx: 0,
             currentRoundIdx: 0,
-            letters: {},
+            enteredLetters: {},
         }
 
     private defaultLetter: Letter = {
@@ -18,56 +20,46 @@ export class Game {
     private targetWord: Word = []
 
     public getErrorKeys = (): Array<string> => {
-        const result: Array<string> = []
-
-        Object.keys(this.roundState.letters).forEach((key) => {
-            if (this.roundState.letters[key] === 'error') {
-                result.push(key)
-            }
-        })
-
-        return result
+        return this.getSomeKeys('error')
     }
 
     public getNearKeys = (): Array<string> => {
-        const result: Array<string> = []
-
-        Object.keys(this.roundState.letters).forEach((key) => {
-            if (this.roundState.letters[key] === 'near') {
-                result.push(key)
-            }
-        })
-
-        return result
-
+        return this.getSomeKeys('near')
     }
 
     public getOkKeys = (): Array<string> => {
+        return this.getSomeKeys('ok')
+    }
+
+    private getSomeKeys = (status: StateLetterStatus): Array<string> => {
         const result: Array<string> = []
 
-        Object.keys(this.roundState.letters).forEach((key) => {
-            if (this.roundState.letters[key] === 'ok') {
+        Object.keys(this.state.enteredLetters).forEach((key) => {
+            if (this.state.enteredLetters[key] === status) {
                 result.push(key)
             }
         })
 
         return result
-
     }
 
-    private stringToLetter = (value: string): Array<Letter> => {
+    public stringToLetter = (value: string): Array<Letter> => {
         return value.split('').map((char) => ({ key: char }))
     }
 
-    private letterToString = (letters: Array<Letter>): string => {
+    public letterToString = (letters: Array<Letter>): string => {
         return letters.map((letter) => letter.key).join('')
     }
 
-    public getLetter = () => {
+    public getWordLetter = () => {
         return this.targetWord
     }
 
-    private getInitialRounds = (): Array<Array<Letter>> => {
+    public getWordString = () => {
+        return this.letterToString(this.targetWord)
+    }
+
+    private getInitialAttempts = (): Array<Array<Letter>> => {
         return [
             [{ ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }],
             [{ ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }],
@@ -80,58 +72,63 @@ export class Game {
     public updateListener = () => {}
     public finishListener = () => {}
 
-    public rounds: Array<Array<Letter>> = this.getInitialRounds()
+    public attempts: Array<Array<Letter>> = this.getInitialAttempts()
 
-    public enterKey = (key: string) => {
-        const lastLetterIdx = this.rounds[0].length - 1
-        const lastLineIdx = this.rounds.length - 1
-        const wordRaw = this.rounds[this.roundState.currentRoundIdx]
-        const wordString = wordRaw.map((letter) => letter.key).join('')
+    public enterKey = (enteredKey: string) => {
+        const lastLetterIdx = this.attempts[0].length - 1
+        const lastLineIdx = this.attempts.length - 1
+        const currentAttempt = this.attempts[this.state.currentRoundIdx]
+        currentAttempt[this.state.currentLetterIdx].key = enteredKey
+        const currentAttemptString = currentAttempt.map((letter) => letter.key).join('')
 
-        wordRaw[this.roundState.currentLetterIdx].key = key
-
-        if (this.roundState.currentLetterIdx === lastLetterIdx) {
-            // Ввели слово правильно
-            if (this.letterToString(this.targetWord) === `${wordString}${key}`) { // TODO костыль
+        if (this.state.currentLetterIdx === lastLetterIdx) { // Ввели последнюю букву
+            if (this.letterToString(this.targetWord) === currentAttemptString) { // Ввели слово правильно
                 this.finishListener()
-            }
-            // Ввели последнюю букву
-            else if (this.roundState.currentRoundIdx === lastLineIdx) {
-                // Ввели последнее слово
-                console.log('GAME OVER')
+            } else if (this.state.currentRoundIdx === lastLineIdx) { // Ввели последнюю букву последнего раунда
                 this.finishListener()
             } else {
-                Object.keys(this.roundState.letters).forEach((stateLetter) => {
-                    this.roundState.letters[stateLetter] = undefined
-                })
+                // Object.keys(this.state.enteredLetters).forEach((stateLetter) => {
+                //     if (this.state.enteredLetters[stateLetter] === 'ok') {
 
-                // Взять буквы из только что законченного слова и занести их в массивы (used, okPlace, wrongPlace)
-                // wordRaw.forEach((letter, letterIdx) => {
-                //     const isPlaceOk = this.targetWord[letterIdx].key === letter.key
-                //     if (isPlaceOk) {
-                //         this.roundState.okKeys.push(letter.key)
+                //     } else if (this.state.enteredLetters[stateLetter] === 'near') {
+
+                //     } else if (this.state.enteredLetters[stateLetter] === 'error') {
+
                 //     } else {
-                //         this.roundState.usedKeys.push(letter.key)
+
                 //     }
+
+                //     // this.state.enteredLetters[stateLetter] = undefined
                 // })
 
+                // Взять буквы из только что законченного слова и занести их в массивы (used, okPlace, wrongPlace)
+                currentAttempt.forEach((letter, letterIdx) => {
+                    const isPlaceOk = this.targetWord[letterIdx].key === letter.key
+                    if (isPlaceOk) {
+                        this.state.enteredLetters[letter.key] = 'ok'
+                    } else if (currentAttemptString.includes(letter.key)) {
+                        this.state.enteredLetters[letter.key] = 'near'
+                    }
+                })
+
                 // Переход к следующему слову
-                this.roundState.currentRoundIdx += 1
-                this.roundState.currentLetterIdx = 0
+                this.state.currentRoundIdx += 1
+                this.state.currentLetterIdx = 0
             }
         } else {
             // Переход к следующей букве
-            this.roundState.currentLetterIdx = wordString.length + 1
+            this.state.currentLetterIdx = currentAttemptString.length + 1
         }
 
         this.updateListener()
     }
 
     public handleBackspace = () => {
-        this.rounds[this.roundState.currentRoundIdx][this.roundState.currentLetterIdx].key = ''
-        if (this.roundState.currentLetterIdx > 0) {
-            this.roundState.currentLetterIdx -= 1
+        this.attempts[this.state.currentRoundIdx][this.state.currentLetterIdx].key = ''
+        if (this.state.currentLetterIdx > 0) {
+            this.state.currentLetterIdx -= 1
         }
+        this.updateListener()
     }
 
     private setTargetWord = (value: string) => {
@@ -141,12 +138,12 @@ export class Game {
     public newGame = (value: string) => {
         this.setTargetWord(value)
 
-        this.rounds = this.getInitialRounds()
+        this.attempts = this.getInitialAttempts()
 
-        this.roundState = {
+        this.state = {
             currentLetterIdx: 0,
             currentRoundIdx: 0,
-            letters: {},
+            enteredLetters: {},
         }
     }
 }
