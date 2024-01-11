@@ -41,7 +41,7 @@ export default function App() {
         game.current.updateListener = () => {
             setShouldUpdate(Math.random())
         }
-        game.current.finishListener = () => {
+        game.current.successListener = () => {
             setStage(GameStage.FINISH)
 
             // @ts-ignore
@@ -57,6 +57,9 @@ export default function App() {
                     }, 3_000)
                 }, 3_000)
             }
+        }
+        game.current.failListener = () => {
+            setStage(GameStage.FINISH)
         }
     }, [])
 

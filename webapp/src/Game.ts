@@ -70,20 +70,24 @@ export class Game {
     }
 
     public updateListener = () => {}
-    public finishListener = () => {}
+    public successListener = () => {}
+    public failListener = () => {}
 
     public attempts: Array<Array<Letter>> = this.getInitialAttempts()
 
     private updateLettersState = (currentAttempt: Letter[]) => {
-        const currentAttemptString = this.letterToString(currentAttempt)
+        const targetWrongString = this.letterToString(this.targetWord)
         // Взять буквы из только что законченного слова и занести их в массивы (used, okPlace, wrongPlace)
         currentAttempt.forEach((letter, letterIdx) => {
             if (this.targetWord[letterIdx].key === letter.key) {
                 this.state.enteredLetters[letter.key] = 'ok'
                 currentAttempt[letterIdx].state = 'ok'
-            } else if (currentAttemptString.includes(letter.key)) {
+            } else if (targetWrongString.includes(letter.key)) {
                 this.state.enteredLetters[letter.key] = 'near'
                 currentAttempt[letterIdx].state = 'near'
+            } else {
+                this.state.enteredLetters[letter.key] = 'error'
+                currentAttempt[letterIdx].state = 'error'
             }
         })
     }
@@ -132,9 +136,9 @@ export class Game {
         if (this.state.currentLetterIdx === lastLetterIdx + 1) {
             if (this.letterToString(this.targetWord) === currentAttemptString) { // Ввели слово правильно
                 this.updateLettersState(currentAttempt)
-                this.finishListener()
+                this.successListener()
             } else if (this.state.currentRoundIdx === lastLineIdx) { // Ввели последнюю букву последнего раунда
-                this.finishListener()
+                this.failListener()
             } else {
                 this.updateLettersState(currentAttempt)
 
