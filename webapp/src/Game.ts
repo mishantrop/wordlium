@@ -1,6 +1,7 @@
 import type { Letter, Word } from './types/letter'
 
-type StateLetterStatus = 'ok' | 'near' | 'error'
+export type StateLetterStatus = 'ok' | 'near' | 'error'
+export type GameLanguage = 'ru' | 'en'
 
 export class Game {
     public state: {
@@ -66,6 +67,7 @@ export class Game {
             [{ ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }],
             [{ ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }],
             [{ ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }],
+            [{ ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }],
         ]
     }
 
@@ -82,10 +84,10 @@ export class Game {
             if (this.targetWord[letterIdx].key === letter.key) {
                 this.state.enteredLetters[letter.key] = 'ok'
                 currentAttempt[letterIdx].state = 'ok'
-            } else if (targetWrongString.includes(letter.key)) {
+            } else if (letter.key && targetWrongString.includes(letter.key) && this.state.enteredLetters[letter.key] !== 'ok') {
                 this.state.enteredLetters[letter.key] = 'near'
                 currentAttempt[letterIdx].state = 'near'
-            } else {
+            } else if (!targetWrongString.includes(letter.key)) {
                 this.state.enteredLetters[letter.key] = 'error'
                 currentAttempt[letterIdx].state = 'error'
             }
@@ -166,5 +168,7 @@ export class Game {
             currentRoundIdx: 0,
             enteredLetters: {},
         }
+
+        this.updateListener()
     }
 }

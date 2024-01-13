@@ -18,7 +18,9 @@
     color: #222;
     cursor: pointer;
     display: flex;
+    flex: 1;
     font-size: 16px;
+    justify-content: center;
     padding: 7px;
 
     &:hover {

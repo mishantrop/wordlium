@@ -1,10 +1,29 @@
 .header {
-  letter-spacing: 8px;
-  padding: 24px 0;
-  text-align: center;
-  text-transform: uppercase;
+    letter-spacing: 8px;
+    padding: 12px 0;
+    text-align: center;
+    text-transform: uppercase;
 
-  @media (prefers-color-scheme: dark) {
-      color: #ddd;
-  }
+    @media (prefers-color-scheme: dark) {
+        color: #ddd;
+    }
+}
+
+.content {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.icon-button {
+    background-color: transparent;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    height: 32px;
+    width: 32px;
+
+    &:hover {
+        border-color: #ffb100;
+    }
 }

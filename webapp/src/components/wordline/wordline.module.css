@@ -3,35 +3,3 @@
     gap: 4px;
     justify-content: center;
 }
-
-.letter {
-    align-items: center;
-    border-radius: 4px;
-    border: 1px solid #999;
-    color: #666;
-    display: flex;
-    font-size: 32px;
-    height: 48px;
-    justify-content: center;
-    padding: 4px;
-    text-align: center;
-    width: 48px;
-
-    @media (prefers-color-scheme: dark) {
-        background-color: #333;
-        border: 1px solid #3f3f3f;
-        color: #999;
-    }
-}
-
-.current {
-    border: 2px solid #ffb100;
-}
-
-.ok {
-    color: #2fad00;
-}
-
-.near {
-    color: #ffb100;
-}

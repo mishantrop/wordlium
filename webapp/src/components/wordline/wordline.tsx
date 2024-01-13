@@ -1,19 +1,20 @@
 import React from 'react'
 
-import { Letter } from '../../types/letter'
+import { Letter as LetterType } from '../../types/letter'
 
+import { Letter } from './letter'
 import * as styles from './wordline.module.css'
 
 type Props = {
+    attempt: Array<LetterType>;
     currentLetterIdx?: number;
-    attempt: Array<Letter>;
-    targetWord?: Array<Letter>;
+    targetWord?: Array<LetterType>;
     targetWordString?: string;
 }
 
 export const WordLine = ({
-    currentLetterIdx,
     attempt,
+    currentLetterIdx,
     targetWord,
     targetWordString,
 }: Props) => {
@@ -21,26 +22,13 @@ export const WordLine = ({
         <div className={styles.wordline}>
             {attempt.map((_, letterIdx) => {
                 return (
-                    <div
-                        className={[
-                            styles.letter,
-                            // Буква отгадана
-                            targetWord?.[letterIdx] && attempt[letterIdx].key === targetWord[letterIdx].key
-                                ? styles.ok
-                                : undefined,
-                            // Буква отгадана, но место неправильное
-                            targetWord?.[letterIdx] && attempt[letterIdx].key !== targetWord[letterIdx].key && targetWordString?.includes(attempt[letterIdx].key)
-                                ? styles.near
-                                : undefined,
-                            // Пустая ячейка для текущего ввода
-                            letterIdx === currentLetterIdx
-                                ? styles.current
-                                : undefined,
-                        ].join(' ')}
+                    <Letter
                         key={letterIdx}
-                    >
-                        {attempt[letterIdx].key}
-                    </div>
+                        char={attempt[letterIdx].key}
+                        isCurrent={letterIdx === currentLetterIdx}
+                        {...targetWord?.[letterIdx] && attempt[letterIdx].key === targetWord[letterIdx].key ? { mode: 'ok' } : {}}
+                        {...targetWord?.[letterIdx] && attempt[letterIdx].key && attempt[letterIdx].key !== targetWord[letterIdx].key && targetWordString?.includes(attempt[letterIdx].key) ? { mode: 'near' } : {}}
+                    />
                 )
             })}
         </div>
