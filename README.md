@@ -10,7 +10,8 @@ Demo: https://quasi-art.ru/wordlium/
 Features:
 * Words from Russian and English vocabulary
 * Light/Dark theme (media-query)
-* Storing settings to localStorage
+* Storing settings to localStorage (and reading from the one)
+* Optional attempt validation by vocabulary
 
 Technologies:
 * TypeScript
