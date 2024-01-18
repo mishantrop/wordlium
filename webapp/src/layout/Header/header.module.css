@@ -3,31 +3,51 @@
     padding: 12px 0;
     text-align: center;
     text-transform: uppercase;
+    user-select: none;
 
     @media (prefers-color-scheme: dark) {
         color: #ddd;
     }
 }
 
-.content {
+.buttons {
     align-items: center;
     display: flex;
     justify-content: center;
+    gap: 8px;
+}
+
+.content {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
+
+    @media (min-width: 300px) {
+        flex-direction: row;
+    }
 }
 
 .icon-button {
+    align-items: center;
     background-color: transparent;
     border: 2px solid #222;
     border-radius: 50%;
     cursor: pointer;
-    height: 32px;
-    width: 32px;
+    display: flex;
+    height: 28px;
+    justify-content: center;
+    width: 28px;
 
     @media (prefers-color-scheme: dark) {
         border: 2px solid #fff;
     }
 
     & > svg {
+        width: 18px;
+        height: 18px;
+
         path {
             fill: #222;
 
@@ -39,5 +59,15 @@
 
     &:hover {
         border-color: #ffb100;
+
+        & > svg {
+            path {
+                fill: #ffb100;
+
+                @media (prefers-color-scheme: dark) {
+                    fill: #ffb100;
+                }
+            }
+        }
     }
 }

@@ -14,9 +14,6 @@ const plugins = [
             implementation: ImageMinimizerPlugin.imageminMinify,
             options: {
                 plugins: [
-                    ['gifsicle', { interlaced: true }],
-                    ['jpegtran', { progressive: true }],
-                    ['optipng', { optimizationLevel: 8 }],
                     [
                         'svgo',
                         {

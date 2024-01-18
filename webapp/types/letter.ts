@@ -1,6 +1,6 @@
-export interface Letter {
+export interface WordLetter {
     key: string;
     state: 'ok' | 'near' | 'error' | undefined;
 }
 
-export type Word = Array<Letter>
+export type Word = Array<WordLetter>

@@ -11,7 +11,7 @@ export const Layout = ({
 }: {
     children: React.ReactNode;
     header: React.ReactNode;
-    keyboard: React.ReactNode;
+    keyboard?: React.ReactNode;
 }) => {
     return (
         <div className={styles.layout}>
@@ -20,9 +20,9 @@ export const Layout = ({
                 <div className={[styles.container, styles.mainContent].join(' ')}>
                     {children}
                 </div>
-                <div className={[styles.container, styles.mainContent].join(' ')}>
+                {keyboard && (<div className={[styles.container, styles.mainContent].join(' ')}>
                     {keyboard}
-                </div>
+                </div>)}
             </div>
             <Footer/>
         </div>

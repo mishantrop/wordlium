@@ -1,39 +1,23 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useEffect, useRef, useState } from 'react'
 import { Keyboard } from './components/keyboard/keyboard'
 import { WordLine } from './components/wordline/wordline'
-import { Game, GameLanguage } from './Game'
+import { Game, GameLanguage } from './game/Game'
 import { Layout } from './layout/layout/layout'
-// import { BrowserRouter as Router } from 'react-router-dom'
 
-// import AppRoutes from './routes/routes'
-import { words as wordsRu } from './dict/words-ru-5'
-import { words as wordsEn } from './dict/words-en-5'
 import * as styles from './app.module.css'
-import { rand } from './rand'
 import { Modal } from './components/modal/modal'
 import Header from './layout/Header/header'
-import { Letter } from './components/wordline/letter'
+import { GameStage } from './game/GameStage'
+import { ScreenHelp } from './screens/help'
+import { ScreenLanguage } from './screens/language'
 
-enum GameStage {
-    GAME = 'GAME',
-    FINISH = 'FINISH',
-}
-
-export default function App() {
+export const App = () => {
     const [cheatX, setCheatX] = useState(0)
     const game = useRef<Game>(new Game())
     const [shouldUpdate, setShouldUpdate] = useState(Math.random())
     const [stage, setStage] = useState(GameStage.GAME)
-    const [isOpenHelp, setIsOpenHelp] = useState(false)
-    const [isOpenLanguages, setIsOpenLanguages] = useState(false)
-    const [gameLanguage, setGameLanguage] = useState<GameLanguage>('ru')
 
-    const wordsByLanguage: Record<GameLanguage, Array<string>> = {
-        ru: wordsRu,
-        en: wordsEn,
-    }
-    const words = wordsByLanguage[gameLanguage]
+    const [openedModal, setOpenedModal] = useState<'help' | 'settings' | 'language'>()
 
     const showConfetti = () => {
         const confettiElement = document.querySelector<HTMLCanvasElement>('#confetti-canvas')
@@ -49,21 +33,31 @@ export default function App() {
         }
     }
 
+    const newGame = () => {
+        setStage(GameStage.GAME)
+        game.current.newGame()
+    }
+
     useEffect(() => {
-        const randomWord = words[rand(0, words.length - 1)]
-        game.current.newGame(randomWord)
+        newGame()
         game.current.updateListener = () => {
             setShouldUpdate(Math.random())
+        }
+        game.current.publicErrorListener = (error) => {
+            alert(error.text)
         }
         game.current.successListener = () => {
             setStage(GameStage.FINISH)
 
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             if (typeof window.startConfetti === 'function') {
                 showConfetti()
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 window.startConfetti()
                 setTimeout(() => {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
                     window.stopConfetti()
                     setTimeout(() => {
@@ -75,107 +69,64 @@ export default function App() {
         game.current.failListener = () => {
             setStage(GameStage.FINISH)
         }
-    }, [gameLanguage])
+    }, [])
 
     const handleClickNewWord = () => {
-        const randomWord = words[rand(0, words.length - 1)]
-        game.current.newGame(randomWord)
+        game.current.newGame({})
         setStage(GameStage.GAME)
     }
 
-    if (isOpenHelp) {
+    const handleChooseLanguage = (language: GameLanguage) => {
+        if (language !== game.current.getConfigProperty('language')) {
+            game.current.setConfigProperty('language', language)
+            newGame()
+        }
+    }
+
+    if (openedModal === 'help') {
         return (
-            <Layout
-                keyboard={null}
-                header={(<Header/>)}
-            >
-                <Modal
-                    title="Как играть?"
-                    onClose={() => {
-                        setIsOpenHelp(false)
-                    }}
-                >
-                    <div className={styles.typography}>
-                        <p>Задача: угадать загаданное слово с шести попыток.</p>
-                        <p>После каждой попытки буквы в квадратиках и на клавиатуре подсвечиваются определённым образом, чтобы было чуть проще.
-                            Например, загадано слово КЛОУН, и вы вводите слово НЮАНС:</p>
-                        <div style={{ display: 'flex', gap: '8px', margin: '0 0 1rem' }}>
-                            <Letter char="н" mode="near" />
-                            <Letter char="ю" />
-                            <Letter char="а" />
-                            <Letter char="н" mode="near" />
-                            <Letter char="с" />
-                        </div>
-                        <p>Буква Н есть в загаданном слове, но стоит в другом месте.</p>
-                        <p>Затем ввели слово БЛОХА. Буквы Л и О есть в загаданном слове и стоят на правильных местах.</p>
-                        <div style={{ display: 'flex', gap: '8px', margin: '0 0 1rem' }}>
-                            <Letter char="б" />
-                            <Letter char="л" mode="ok" />
-                            <Letter char="о" mode="ok" />
-                            <Letter char="х" />
-                            <Letter char="а" />
-                        </div>
-                        <p>Если слово угадано правильно, то все буквы будут выделены.</p>
-                        <div style={{ display: 'flex', gap: '8px', margin: '0 0 1rem' }}>
-                            <Letter char="к" mode="ok" />
-                            <Letter char="л" mode="ok" />
-                            <Letter char="о" mode="ok" />
-                            <Letter char="у" mode="ok" />
-                            <Letter char="н" mode="ok" />
-                        </div>
-
-                        <p><b>Какие слова загаданы?</b></p>
-                        <p>Загаданы существительные в единственном числе</p>
-
-                        <p><b>Могут ли в загаданном слове быть одинаковые буквы, например, ВАННА?</b></p>
-                        <p>Да, в загаданном слове могут быть одинаковые буквы</p>
-
-                        <p><b>Считаются ли Е и Ё одной буквой?</b></p>
-                        <p>Нет, Е и Ё &mdash; это разные буквы</p>
-                    </div>
-                </Modal>
-            </Layout>
+            <ScreenHelp
+                onClose={() => {
+                    setOpenedModal(undefined)
+                }}
+            />
         )
     }
 
-    const handleChooseLanguage = (language: GameLanguage) => {
-        if (language !== gameLanguage) {
-            setGameLanguage(language)
-        }
-
-        setIsOpenLanguages(false)
+    if (openedModal === 'language') {
+        return (
+            <ScreenLanguage
+                currentLanguage={game.current.getConfigProperty('language') as GameLanguage}
+                onChooseLanguage={handleChooseLanguage}
+                onClose={() => {
+                    setOpenedModal(undefined)
+                }}
+            />
+        )
     }
 
-    if (isOpenLanguages) {
+    if (openedModal === 'settings') {
         return (
             <Layout
-                keyboard={null}
                 header={(<Header/>)}
             >
                 <Modal
-                    title="Выберите язык"
+                    title="Настройки"
                     onClose={() => {
-                        setIsOpenLanguages(false)
+                        setOpenedModal(undefined)
                     }}
                 >
-                    <div className={styles.typography}>
-                        <button
-                            className={styles.buttonPrimary}
-                            onClick={() => {
-                                handleChooseLanguage('ru')
+                    <label style={{ display: 'flex', gap: '8px', userSelect: 'none' }}>
+                        <input
+                            checked={game.current.getConfigProperty('vocabulary_words_only') as boolean}
+                            name="vocabulary_words_only"
+                            type="checkbox"
+                            onChange={(event) => {
+                                game.current.setConfigProperty('vocabulary_words_only', event.target.checked)
                             }}
-                        >
-                            Русский
-                        </button>
-                        <button
-                            className={styles.buttonPrimary}
-                            onClick={() => {
-                                handleChooseLanguage('en')
-                            }}
-                        >
-                            English
-                        </button>
-                    </div>
+                        />
+                        Вводить только слова из словаря
+                    </label>
                 </Modal>
             </Layout>
         )
@@ -186,10 +137,13 @@ export default function App() {
             header={(
                 <Header
                     onClickHelp={() => {
-                        setIsOpenHelp(true)
+                        setOpenedModal('help')
                     }}
                     onClickLanguage={() => {
-                        setIsOpenLanguages(true)
+                        setOpenedModal('language')
+                    }}
+                    onClickSettings={() => {
+                        setOpenedModal('settings')
                     }}
                 />
             )}
@@ -199,7 +153,7 @@ export default function App() {
 
                     {stage === GameStage.GAME && (
                         <Keyboard
-                            language={gameLanguage}
+                            language={game.current.getConfigProperty('language')}
                             errorKeys={game.current.getErrorKeys()}
                             nearKeys={game.current.getNearKeys()}
                             okKeys={game.current.getOkKeys()}
@@ -208,8 +162,8 @@ export default function App() {
                                 game.current.handleBackspace()
                             }}
                             onEnter={() => {
-                                game.current.handleEnter()
                                 setCheatX(0)
+                                game.current.handleEnter()
                             }}
                             onLetter={(key: string) => {
                                 setCheatX(0)
@@ -222,7 +176,8 @@ export default function App() {
                             className={styles.buttonPrimary}
                             onClick={handleClickNewWord}
                         >
-                            ещё слово
+                            {game.current.getConfigProperty('language') === 'en' ? 'new game' : null}
+                            {game.current.getConfigProperty('language') === 'ru' ? 'ещё слово' : null}
                         </button>
                     )}
                 </>
@@ -256,16 +211,4 @@ export default function App() {
             {cheatX > 20 && game.current.letterToString(game.current.targetWord)}
         </Layout>
     )
-
-    // return (
-    //   <Router>
-    //     <div className={styles.wrapper}>
-    //       <Header />
-    //       <main className={[commonStyles.container, styles.content].join(' ')}>
-    //         <AppRoutes />
-    //       </main>
-    //       <Footer />
-    //     </div>
-    //   </Router>
-    // )
 }

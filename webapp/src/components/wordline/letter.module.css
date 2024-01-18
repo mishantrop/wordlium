@@ -4,13 +4,20 @@
     border: 1px solid #999;
     color: #666;
     display: flex;
-    font-size: 32px;
-    height: 48px;
+    font-size: 24px;
+    height: 32px;
     justify-content: center;
     padding: 4px;
     text-align: center;
     text-transform: uppercase;
-    width: 48px;
+    user-select: none;
+    width: 32px;
+
+    @media (min-width: 300px) {
+        font-size: 32px;
+        height: 48px;
+        width: 48px;
+    }
 
     @media (prefers-color-scheme: dark) {
         background-color: #333;

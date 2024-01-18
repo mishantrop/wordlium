@@ -1,7 +1,16 @@
-import type { Letter, Word } from './types/letter'
+import { WordLetter, Word } from '../../types/letter'
+import { words as wordsRu } from '../dict/words-ru-5'
+import { words as wordsEn } from '../dict/words-en-5'
+
+import { rand } from './rand'
 
 export type StateLetterStatus = 'ok' | 'near' | 'error'
 export type GameLanguage = 'ru' | 'en'
+
+export type Config = {
+    vocabulary_words_only: boolean;
+    language: GameLanguage;
+}
 
 export class Game {
     public state: {
@@ -14,11 +23,46 @@ export class Game {
             enteredLetters: {},
         }
 
-    private defaultLetter: Letter = {
+    private defaultLetter: WordLetter = {
         key: '',
         state: undefined,
     }
     public targetWord: Word = []
+    private wordsByLanguage: Record<GameLanguage, Array<string>> = {
+        ru: wordsRu,
+        en: wordsEn,
+    }
+    private config: Config = {
+        vocabulary_words_only: true,
+        language: 'ru',
+    }
+
+    constructor() {
+        this.config.vocabulary_words_only = this.getLocalStorageBooleanValue('vocabulary_words_only', true)
+        this.config.language = this.getLocalStorageStringValue('language', 'ru') as GameLanguage
+        if (this.config.language !== 'ru' && this.config.language !== 'en') {
+            this.config.language = 'ru'
+            localStorage.removeItem('language')
+        }
+    }
+
+    private getLocalStorageBooleanValue = (name: keyof Config, defaultValue: boolean) => {
+        const value = localStorage.getItem(`config.${name}`)
+        if (value === 'true' || value === 'false') {
+            return value === 'true'
+        }
+        return defaultValue
+    }
+
+    private getLocalStorageStringValue = (name: keyof Config, defaultValue?: string) => {
+        const value = localStorage.getItem(`config.${name}`)
+        return value ?? defaultValue
+    }
+
+    public updateListener = () => {}
+    public successListener = () => {}
+    public failListener = () => {}
+    public publicErrorListener: (options: { text: string; }) => void = () => {}
 
     public getErrorKeys = (): Array<string> => {
         return this.getSomeKeys('error')
@@ -44,11 +88,11 @@ export class Game {
         return result
     }
 
-    public stringToLetter = (value: string): Array<Letter> => {
+    public stringToLetter = (value: string): Word => {
         return value.split('').map((char) => ({ key: char, state: undefined }))
     }
 
-    public letterToString = (letters: Array<Letter>): string => {
+    public letterToString = (letters: Word): string => {
         return letters.map((letter) => letter.key).join('')
     }
 
@@ -60,7 +104,7 @@ export class Game {
         return this.letterToString(this.targetWord)
     }
 
-    private getInitialAttempts = (): Array<Array<Letter>> => {
+    private getInitialAttempts = (): Array<Word> => {
         return [
             [{ ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }],
             [{ ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }, { ...this.defaultLetter }],
@@ -71,13 +115,7 @@ export class Game {
         ]
     }
 
-    public updateListener = () => {}
-    public successListener = () => {}
-    public failListener = () => {}
-
-    public attempts: Array<Array<Letter>> = this.getInitialAttempts()
-
-    private updateLettersState = (currentAttempt: Letter[]) => {
+    private updateLettersState = (currentAttempt: Word) => {
         const targetWrongString = this.letterToString(this.targetWord)
         // Взять буквы из только что законченного слова и занести их в массивы (used, okPlace, wrongPlace)
         currentAttempt.forEach((letter, letterIdx) => {
@@ -135,6 +173,16 @@ export class Game {
         const currentAttempt = this.attempts[this.state.currentRoundIdx]
         const currentAttemptString = this.letterToString(currentAttempt)
 
+        if (this.config.vocabulary_words_only) {
+            const words = this.wordsByLanguage[this.config.language]
+            if (!words.includes(currentAttemptString)) {
+                if (typeof this.publicErrorListener === 'function') {
+                    this.publicErrorListener({ text: 'Слово не найдено в словаре' })
+                }
+                return
+            }
+        }
+
         if (this.state.currentLetterIdx === lastLetterIdx + 1) {
             if (this.letterToString(this.targetWord) === currentAttemptString) { // Ввели слово правильно
                 this.updateLettersState(currentAttempt)
@@ -157,10 +205,13 @@ export class Game {
         this.targetWord = this.stringToLetter(value)
     }
 
-    public newGame = (value: string) => {
-        this.setTargetWord(value)
+    public newGame = () => {
+        const words = this.wordsByLanguage[this.config.language]
+        const randomWord = words[rand(0, words.length - 1)]
 
-        console.log(`target: ${value}`)
+        console.log({ randomWord })
+
+        this.setTargetWord(randomWord)
 
         this.attempts = this.getInitialAttempts()
         this.state = {
@@ -171,4 +222,20 @@ export class Game {
 
         this.updateListener()
     }
+
+    public getConfigProperty = (propertyName: keyof Config) => {
+        return this.config[propertyName]
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public setConfigProperty = (propertyName: keyof Config, value: any) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.config[propertyName] = value
+        this.updateListener()
+
+        localStorage.setItem(`config.${propertyName}`, value)
+    }
+
+    public attempts: Array<Word> = this.getInitialAttempts()
 }

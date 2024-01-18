@@ -2,8 +2,7 @@
     "compilerOptions": {
         "target": "es5",
         "rootDirs": [
-            "src",
-            "__jest__"
+            "src"
         ],
         "outDir": "build",
         "lib": [
@@ -12,7 +11,7 @@
         ],
         "typeRoots": [
             "node_modules/@types",
-            "src/types"
+            "types"
         ],
         "allowJs": true,
         "skipLibCheck": true,
@@ -33,12 +32,20 @@
         "jsx": "react",
         "plugins": [
             {
-                "name": "typescript-plugin-css-modules"
+                "name": "typescript-plugin-css-modules",
+                "options": {
+                    "classnameTransform": "dashes",
+                    "customMatcher": "\\.module\\.css$",
+                    "postcssOptions": {
+                        "useConfig": true
+                    }
+                }
             }
         ]
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "types/**/*"
     ],
     "exclude": [
         "node_modules",
