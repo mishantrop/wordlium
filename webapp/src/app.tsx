@@ -10,6 +10,7 @@ import Header from './layout/Header/header'
 import { GameStage } from './game/GameStage'
 import { ScreenHelp } from './screens/help'
 import { ScreenLanguage } from './screens/language'
+import { ScreenVocabularyWordsOnly } from './screens/vocabulary-words-only'
 
 export const App = () => {
     const [cheatX, setCheatX] = useState(0)
@@ -17,7 +18,7 @@ export const App = () => {
     const [shouldUpdate, setShouldUpdate] = useState(Math.random())
     const [stage, setStage] = useState(GameStage.GAME)
 
-    const [openedModal, setOpenedModal] = useState<'help' | 'settings' | 'language'>()
+    const [openedModal, setOpenedModal] = useState<'help' | 'settings' | 'language' | 'vocabulary_words_only'>()
 
     const showConfetti = () => {
         const confettiElement = document.querySelector<HTMLCanvasElement>('#confetti-canvas')
@@ -72,7 +73,7 @@ export const App = () => {
     }, [])
 
     const handleClickNewWord = () => {
-        game.current.newGame({})
+        game.current.newGame()
         setStage(GameStage.GAME)
     }
 
@@ -105,6 +106,16 @@ export const App = () => {
         )
     }
 
+    if (openedModal === 'vocabulary_words_only') {
+        return (
+            <ScreenVocabularyWordsOnly
+                onClose={() => {
+                    setOpenedModal(undefined)
+                }}
+            />
+        )
+    }
+
     if (openedModal === 'settings') {
         return (
             <Layout
@@ -125,7 +136,7 @@ export const App = () => {
                                 game.current.setConfigProperty('vocabulary_words_only', event.target.checked)
                             }}
                         />
-                        Вводить только слова из словаря
+                        Вводить слова только из словаря
                     </label>
                 </Modal>
             </Layout>

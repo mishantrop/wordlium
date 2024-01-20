@@ -46,6 +46,7 @@ class MainActivity : ComponentActivity() {
         val myWebView = WebView(this)
         myWebView.webViewClient = LocalContentWebViewClient(assetLoader)
         myWebView.settings.javaScriptEnabled = true
+        myWebView.settings.domStorageEnabled = true
         setContentView(myWebView)
 
         myWebView.loadUrl("https://appassets.androidplatform.net/assets/index.html")

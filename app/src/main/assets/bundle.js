@@ -1,2 +1,0 @@
-
-document.writeln('hello.js')
