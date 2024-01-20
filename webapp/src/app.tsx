@@ -18,7 +18,7 @@ export const App = () => {
     const [shouldUpdate, setShouldUpdate] = useState(Math.random())
     const [stage, setStage] = useState(GameStage.GAME)
 
-    const [openedModal, setOpenedModal] = useState<'help' | 'settings' | 'language' | 'vocabulary_words_only'>()
+    const [openedModal, setOpenedModal] = useState<'help' | 'settings' | 'language' | 'error'>()
 
     const showConfetti = () => {
         const confettiElement = document.querySelector<HTMLCanvasElement>('#confetti-canvas')
@@ -45,7 +45,7 @@ export const App = () => {
             setShouldUpdate(Math.random())
         }
         game.current.publicErrorListener = (error) => {
-            alert(error.text)
+            setOpenedModal('error')
         }
         game.current.successListener = () => {
             setStage(GameStage.FINISH)
@@ -106,7 +106,7 @@ export const App = () => {
         )
     }
 
-    if (openedModal === 'vocabulary_words_only') {
+    if (openedModal === 'error') {
         return (
             <ScreenVocabularyWordsOnly
                 onClose={() => {
