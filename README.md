@@ -30,7 +30,7 @@ Features:
 * Storing settings to localStorage (and reading from the one).
 * Optional attempt validation by vocabulary.
 
-Technologies:
+## Technologies
 * TypeScript
 * React
 * PostCSS
