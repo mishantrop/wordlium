@@ -44,7 +44,7 @@ export const App = () => {
         game.current.updateListener = () => {
             setShouldUpdate(Math.random())
         }
-        game.current.publicErrorListener = (error) => {
+        game.current.publicErrorListener = () => {
             setOpenedModal('error')
         }
         game.current.successListener = () => {
