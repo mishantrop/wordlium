@@ -1,4 +1,4 @@
-package com.example.wordlium
+package com.quasigames.wordlium
 
 import org.junit.Test
 

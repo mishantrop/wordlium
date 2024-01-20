@@ -1,4 +1,4 @@
-package com.example.wordlium.ui.theme
+package com.quasigames.wordlium.ui.theme
 
 import android.app.Activity
 import android.os.Build

@@ -1,4 +1,4 @@
-package com.example.wordlium.ui.theme
+package com.quasigames.wordlium.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

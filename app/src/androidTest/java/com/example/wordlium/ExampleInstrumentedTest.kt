@@ -1,4 +1,4 @@
-package com.example.wordlium
+package com.quasigames.wordlium
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.example.wordlium", appContext.packageName)
+        assertEquals("com.quasigames.wordlium", appContext.packageName)
     }
 }

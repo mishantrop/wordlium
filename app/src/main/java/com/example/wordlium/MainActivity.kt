@@ -1,4 +1,4 @@
-package com.example.wordlium
+package com.quasigames.wordlium
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
-import com.example.wordlium.ui.theme.WordliumTheme
+import com.quasigames.wordlium.ui.theme.WordliumTheme
 
 private class LocalContentWebViewClient(private val assetLoader: WebViewAssetLoader) : WebViewClientCompat() {
     override fun shouldInterceptRequest(
