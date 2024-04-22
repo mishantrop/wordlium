@@ -6,8 +6,8 @@
 
 Клон игры Wordle, где за несколько попыток нужно угадать слово. Чаще всего на угадывание 5-буквенного слова дано 6 попыток.
 
-Играть онлайн в браузере: https://quasi-art.ru/wordlium/
-Android-приложение: https://quasi-art.ru/wordlium/wordlium-1.0.apk
+* Играть онлайн в браузере: https://quasi-art.ru/wordlium/
+* Android-приложение: https://quasi-art.ru/wordlium/wordlium-1.0.apk
 
 Возможности:
 * Русский и английский словари.
@@ -23,8 +23,8 @@ Android-приложение: https://quasi-art.ru/wordlium/wordlium-1.0.apk
 
 Wordle game clone, where you need to guess the word in a few attempts. Most often, 6 attempts are given to guess a 5-letter word.
 
-Play in web browser: https://quasi-art.ru/wordlium/
-Android app: https://quasi-art.ru/wordlium/wordlium-1.0.apk
+* Play in web browser: https://quasi-art.ru/wordlium/
+* Android app: https://quasi-art.ru/wordlium/wordlium-1.0.apk
 
 Features:
 * Words from Russian and English vocabulary.
